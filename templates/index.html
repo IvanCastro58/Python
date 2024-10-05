@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map with Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div id="map"></div>
+
+    <div class="form-container mt-4">
+        <div id="form-choice">
+            <h4>Map Navigation Tools</h4>
+            <div class="row">
+                <div class="col-12 mb-2">
+                    <button id="search-btn" class="btn btn-primary w-100 p-3 button-maps">
+                        <i class="bi bi-search"></i> Search Place
+                    </button>
+                </div>
+                <div class="col-12">
+                    <button id="directions-btn" class="btn btn-primary w-100 p-3 button-maps">
+                        <i class="bi bi-sign-turn-left"></i> Get Directions
+                    </button>
+                </div>                
+            </div>            
+        </div>
+
+        <div id="search-form" style="display: none;">
+            <div class="d-flex align-items-center justify-content-between">
+                <h4>Search a Place</h4>
+                <button class="btn btn-link close-btn ml-auto" id="close-search-form" title="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <form id="location-form">
+                <div class="form-group">
+                    <input type="text" id="location" class="form-control" placeholder="Enter location">
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary w-50">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="directions-form" style="display: none;">
+            <div class="d-flex align-items-center justify-content-between">
+                <h4>Get Directions</h4>
+                <button class="btn btn-link close-btn ml-auto" id="close-directions-form" title="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <form id="directions-form-content">
+                <div class="form-group">
+                    <input type="text" id="start-location" class="form-control" placeholder="Starting location">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="end-location" class="form-control" placeholder="Destination">
+                </div>
+                <div class="d-flex justify-content-around mt-3">
+                    <button type="button" class="btn btn-success transport-btn" data-mode="driving-car">
+                        <i class="bi bi-car-front"></i> Car
+                    </button>
+                    <button type="button" class="btn btn-info transport-btn" data-mode="cycling-regular">
+                        <i class="bi bi-bicycle"></i> Bike
+                    </button>
+                    <button type="button" class="btn btn-warning transport-btn" data-mode="foot-walking">
+                        <i class="bi bi-person-walking"></i> Walk
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="directions-output" class="mt-4"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script> <!-- Link to the separate script file -->
+</body>
+</html>
