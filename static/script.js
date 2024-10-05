@@ -12,14 +12,16 @@ var currentPolyline = null;
 var startMarker = null;
 var endMarker = null;
 
-// Function to handle the search form submission (for geocoding a location)
 $('#location-form').on('submit', function(e) {
     e.preventDefault();
-
+    
     var location = $('#location').val();
 
     // Clear previous directions output
     $('#directions-output').empty();
+
+    // Show loading spinner
+    $('#loading').show();
 
     // Make an AJAX request to the Flask app to get geocoding data
     $.ajax({
@@ -28,6 +30,9 @@ $('#location-form').on('submit', function(e) {
         contentType: 'application/json',
         data: JSON.stringify({ location: location }),
         success: function(response) {
+            // Hide loading spinner
+            $('#loading').hide();
+
             // Clear the previous marker if it exists
             if (currentMarker) {
                 map.removeLayer(currentMarker);
@@ -47,10 +52,13 @@ $('#location-form').on('submit', function(e) {
             map.fitBounds([[lat, lon]]);
         },
         error: function(xhr) {
+            // Hide loading spinner
+            $('#loading').hide();
             alert('Location not found');
         }
     });
 });
+
 
 // Function to handle the directions form submission
 $('.transport-btn').on('click', function() {
@@ -60,6 +68,9 @@ $('.transport-btn').on('click', function() {
 
     // Clear previous directions output
     $('#directions-output').empty();
+
+    // Show loading spinner
+    $('#loading-direction').show();
 
     // Geocode the start location
     $.ajax({
@@ -121,6 +132,9 @@ $('.transport-btn').on('click', function() {
                             var distance = response.distance;
                             var duration = response.duration;
 
+                            // Hide loading spinner
+                            $('#loading-direction').hide();
+
                             // Display directions steps
                             var directionsHtml = '<h5>Directions:</h5><ol>';
                             steps.forEach(function(step) {
@@ -137,20 +151,27 @@ $('.transport-btn').on('click', function() {
                             map.fitBounds(currentPolyline.getBounds());
                         },
                         error: function(xhr) {
+                            // Hide loading spinner
+                            $('#loading-direction').hide();
                             alert('Could not retrieve directions');
                         }
                     });
                 },
                 error: function(xhr) {
+                    // Hide loading spinner
+                    $('#loading-direction').hide();
                     alert('End location not found');
                 }
             });
         },
         error: function(xhr) {
+            // Hide loading spinner
+            $('#loading-direction').hide();
             alert('Start location not found');
         }
     });
 });
+
 
 // Document ready function to toggle between the forms
 $(document).ready(function() {
