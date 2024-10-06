@@ -53,11 +53,13 @@ def directions():
         steps = route['steps']
         distance = route['distance']
         duration = route['duration']
+        geometry = directions_data['features'][0]['geometry']
 
         return jsonify({
             'steps': steps,
             'distance': distance,
-            'duration': duration
+            'duration': duration,
+            'geometry': geometry
         })
     else:
         return jsonify({'error': 'Directions not found.'}), 404
