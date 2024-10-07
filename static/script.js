@@ -1,11 +1,47 @@
 // Initialize the map
-var map = L.map('map').setView([51.505, -0.09], 13);
+var map = L.map('map').setView([14.6098, 120.9896], 13);
 
 // Add a tile layer to the map
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 }).addTo(map);
 
+
+// Define the OpenStreetMap layer
+var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map); // Add OSM layer to the map by default
+
+var googleStreets = L.tileLayer('http://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+});
+
+var googleSat = L.tileLayer('http://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
+    maxZoom: 20,
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+});
+
+// Handle button clicks for layer switching
+document.getElementById('google-streets-btn').addEventListener('click', function() {
+    // Remove the current layers and add Google Streets
+    map.removeLayer(osmLayer);  // Remove OSM if active
+    map.removeLayer(googleSat); // Remove Google Satellite if active
+    if (!map.hasLayer(googleStreets)) {
+        googleStreets.addTo(map);
+        console.log("Google streets added.");
+    }
+});
+
+document.getElementById('google-sat-btn').addEventListener('click', function() {
+    // Remove the current layers and add Google Satellite
+    map.removeLayer(osmLayer);  // Remove OSM if active
+    map.removeLayer(googleStreets);  // Remove Google Streets if active
+    if (!map.hasLayer(googleSat)) {
+        googleSat.addTo(map);
+        console.log("Google satellite added.");
+    }
+});
 // Variables to store the markers and polyline
 var currentMarker = null;
 var currentPolyline = null;
