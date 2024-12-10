@@ -30,6 +30,10 @@
         </button>
     </div>
 
+    <div id="dark-mode-toggle" class="btn btn-dark" style="position: fixed; bottom: 20px; left: 20px; z-index: 1000;">
+        <i class="bi bi-moon"></i> Dark Mode
+    </div>
+
     <div class="form-container mt-4">
         <div id="form-choice">
             <h4>Map Navigation Tools</h4>
@@ -37,6 +41,11 @@
                 <div class="col-12 mb-2">
                     <button id="search-btn" class="btn btn-primary w-100 p-3 button-maps">
                         <i class="bi bi-search"></i> Search Place
+                    </button>
+                </div>
+                <div class="col-12 mb-2">
+                    <button id="reverse-geocode-btn" class="btn btn-primary w-100 p-3 button-maps">
+                        <i class="bi bi-geo-alt"></i> Reverse Geocode
                     </button>
                 </div>
                 <div class="col-12">
@@ -57,6 +66,26 @@
             <form id="location-form">
                 <div class="form-group">
                     <input type="text" id="location" class="form-control" placeholder="Enter location">
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn btn-primary w-50">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="reverse-form" style="display: none;">
+            <div class="d-flex align-items-center justify-content-between">
+                <h4>Reverse Geocoding</h4>
+                <button class="btn btn-link close-btn ml-auto" id="close-reverse-form" title="Close">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <form id="reverse-location-form">
+                <div class="form-group">
+                    <input type="text" id="latitude" class="form-control" placeholder="Enter latitude">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="longitude" class="form-control" placeholder="Enter longitude">
                 </div>
                 <div class="d-flex justify-content-center">
                     <button type="submit" class="btn btn-primary w-50">Search</button>

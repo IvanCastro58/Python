@@ -7,40 +7,52 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 
-// Define the OpenStreetMap layer
-var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map); // Add OSM layer to the map by default
+// Default Light Tile Layer
+var lightTileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
 
-var googleStreets = L.tileLayer('http://{s}.google.com/vt?lyrs=m&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
-    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+// Dark Tile Layer
+var darkTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+    subdomains: 'abcd'
 });
 
-var googleSat = L.tileLayer('http://{s}.google.com/vt?lyrs=s&x={x}&y={y}&z={z}', {
-    maxZoom: 20,
-    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
-});
-
-// Handle button clicks for layer switching
-document.getElementById('google-streets-btn').addEventListener('click', function() {
-    // Remove the current layers and add Google Streets
-    map.removeLayer(osmLayer);  // Remove OSM if active
-    map.removeLayer(googleSat); // Remove Google Satellite if active
-    if (!map.hasLayer(googleStreets)) {
-        googleStreets.addTo(map);
-        console.log("Google streets added.");
+// Handle Dark Mode Toggle
+$('#dark-mode-toggle').on('click', function() {
+    $('body').toggleClass('dark-mode');
+    
+    // Switch between light and dark tile layers
+    if ($('body').hasClass('dark-mode')) {
+        map.removeLayer(lightTileLayer);
+        darkTileLayer.addTo(map);
+        $(this).html('<i class="bi bi-sun"></i> Light Mode');
+    } else {
+        map.removeLayer(darkTileLayer);
+        lightTileLayer.addTo(map);
+        $(this).html('<i class="bi bi-moon"></i> Dark Mode');
     }
 });
 
-document.getElementById('google-sat-btn').addEventListener('click', function() {
-    // Remove the current layers and add Google Satellite
-    map.removeLayer(osmLayer);  // Remove OSM if active
-    map.removeLayer(googleStreets);  // Remove Google Streets if active
-    if (!map.hasLayer(googleSat)) {
-        googleSat.addTo(map);
-        console.log("Google satellite added.");
-    }
+// Google Maps Tile Layer toggles
+$('#google-streets-btn').on('click', function() {
+    map.eachLayer(function(layer) {
+        map.removeLayer(layer);
+    });
+    var googleLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        attribution: '© Google',
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    }).addTo(map);
+});
+
+$('#google-sat-btn').on('click', function() {
+    map.eachLayer(function(layer) {
+        map.removeLayer(layer);
+    });
+    var googleSatLayer = L.tileLayer('https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+        attribution: '© Google',
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    }).addTo(map);
 });
 // Variables to store the markers and polyline
 var currentMarker = null;
@@ -158,6 +170,48 @@ $('.transport-btn').on('click', function() {
     });
 });
 
+$('#reverse-location-form').on('submit', function(e) {
+    e.preventDefault();
+
+    var lat = $('#latitude').val();
+    var lon = $('#longitude').val();
+
+    // Clear previous directions output
+    $('#directions-output').empty();
+
+    // Show loading spinner
+    $('#loading').show();
+
+    // Make an AJAX request to the Flask app for reverse geocoding
+    $.ajax({
+        url: '/reverse_geocode',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ latitude: lat, longitude: lon }),
+        success: function(response) {
+            // Hide loading spinner
+            $('#loading').hide();
+
+            // Remove existing marker if any
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+
+            // Add a marker at the reverse geocoded location
+            currentMarker = L.marker([response.lat, response.lon]).addTo(map)
+                .bindPopup(`<b>${response.address}</b><br>Lat: ${response.lat}, Lon: ${response.lon}`)
+                .openPopup();
+
+            map.setView([response.lat, response.lon], 13);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error:', error);
+            alert('Unable to find address for the given coordinates.');
+            $('#loading').hide();
+        }
+    });
+});
+
 // Handle UI display for search and directions forms
 $('#search-btn').on('click', function() {
     $('#form-choice').hide();
@@ -176,5 +230,15 @@ $('#close-search-form').on('click', function() {
 
 $('#close-directions-form').on('click', function() {
     $('#directions-form').hide();
+    $('#form-choice').show();
+});
+
+$('#reverse-geocode-btn').on('click', function() {
+    $('#form-choice').hide();
+    $('#reverse-form').show();
+});
+
+$('#close-reverse-form').on('click', function() {
+    $('#reverse-form').hide();
     $('#form-choice').show();
 });

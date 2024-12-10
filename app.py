@@ -29,6 +29,23 @@ def geocode():
     else:
         return jsonify({'error': 'Location not found'}), 404
 
+@app.route('/reverse_geocode', methods=['POST'])
+def reverse_geocode():
+    data = request.get_json()
+    lat = data['latitude']
+    lon = data['longitude']
+
+    # Reverse Geocoding request to OpenRouteService
+    url = f'https://api.openrouteservice.org/geocode/reverse?api_key={ORS_API_KEY}&point.lat={lat}&point.lon={lon}'
+    response = requests.get(url)
+    reverse_geocode_data = response.json()
+
+    if 'features' in reverse_geocode_data and reverse_geocode_data['features']:
+        address = reverse_geocode_data['features'][0]['properties']['label']
+        return jsonify({'address': address, 'lat': lat, 'lon': lon})
+    else:
+        return jsonify({'error': 'Location not found'}), 404
+
 @app.route('/directions', methods=['POST'])
 def directions():
     data = request.get_json()

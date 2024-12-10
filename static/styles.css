@@ -78,3 +78,31 @@ body, html {
     margin-bottom: 10px;
 }
 
+/* Dark Mode Styles */
+body.dark-mode, html.dark-mode {
+    background-color: #2c2c2c;
+    color: #fff;
+}
+
+body.dark-mode .form-container {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark-mode .btn {
+    background-color: #555;
+    color: #fff;
+}
+
+body.dark-mode .btn:hover {
+    background-color: #777;
+}
+
+/* Additional styling for dark mode toggle button */
+.dark-mode-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
